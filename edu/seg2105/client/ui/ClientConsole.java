@@ -75,6 +75,7 @@ public class ClientConsole implements ChatIF
   /**
    * This method waits for input from the console.  Once it is 
    * received, it sends it to the client's message handler.
+   * no space allowed for commands
    */
   public void accept() 
   {
@@ -85,8 +86,52 @@ public class ClientConsole implements ChatIF
 
       while (true) 
       {
+    	//no space allowed for commands
         message = fromConsole.nextLine();
-        client.handleMessageFromClientUI(message);
+        if(message.equals("#quit")) {
+        	client.quit();
+        }
+        else if(message.equals("#logoff")) {
+        	client.closeConnection();
+        }
+        else if(message.startsWith("#sethost")) {
+        	String host = message.substring("#sethost".length()); 
+        
+        	if(!client.isConnected()) {
+        		client.setHost(host);
+            	System.out.println("Setting host to: " + host);
+        	}else {
+        		System.out.println("Can not set host when connected");
+        	}
+        }
+        else if(message.startsWith("#setport")) {
+        	int port = Integer.parseInt(message.substring("#setport".length())); 
+        	if(!client.isConnected()) {
+        		client.setPort(port);
+            	System.out.println("Setting port to: " + port);
+        	}else {
+        		System.out.println("Can not set port when connected");
+        	}
+        	
+        }
+        else if(message.equals("#login")) {
+        	if(!client.isConnected()) {
+        		client.openConnection();
+        	}else {
+        		System.out.println("You are already logged in");
+        	}
+        	
+        }
+        else if(message.equals("#gethost")) {
+        	System.out.println(client.getHost());        	
+        }
+        else if(message.equals("#getport")) {
+        	System.out.println(client.getPort());
+        }
+        else {
+        	client.handleMessageFromClientUI(message);
+        }
+        
       }
     } 
     catch (Exception ex) 
