@@ -12,6 +12,8 @@ public class ServerConsole implements ChatIF{
 	
 	Scanner fromConsole;
 	
+	
+	
 	final public static int DEFAULT_PORT = 5555;
 
 	@Override
@@ -45,6 +47,7 @@ public class ServerConsole implements ChatIF{
 	        
 	        if(message.equals("#quit")) {
 	        	server.close();
+	        	System.exit(0);
 	        }
 	        else if(message.equals("#stop")) {
 	        	server.stopListening();
@@ -69,6 +72,7 @@ public class ServerConsole implements ChatIF{
 	        }
 	        
 	        else {
+	        	display(message);
 	        	server.sendToAllClients("<SERVER MSG> "+ message);
 	        } 
 	      }

@@ -53,9 +53,33 @@ public class EchoServer extends AbstractServer
    */
   public void handleMessageFromClient
     (Object msg, ConnectionToClient client)
-  {
-    System.out.println("Message received: " + msg + " from " + client);
-    this.sendToAllClients(msg);
+  {	  
+	  System.out.println("Message received: <" + msg + "> from " + client.getInfo("loginID"));
+	    
+	   
+	  String message = (String) msg;
+	  if(message.startsWith("#login")) {
+		  String id = message.substring("#login".length());  
+		  if(!(client.getInfo("loginID")==null)) {
+			  System.out.println("Error: ");
+			  try {
+				  client.close();
+			  }
+			  catch(IOException e){
+				  
+			  }
+		  }
+		  else {
+			  client.setInfo("loginID", id);
+			  System.out.println(id+"has logged on");
+		  }
+		  this.sendToAllClients(id+"has logged on");
+	  }else {
+		  this.sendToAllClients(msg);
+	  }
+	  
+		  
+	
   }
     
   /**
@@ -97,7 +121,7 @@ public class EchoServer extends AbstractServer
    */
   @Override
   protected void clientConnected(ConnectionToClient client) {
-	  System.out.println("A new Client "+ client +" connected to the server.");
+	  System.out.println("A new client has connected to the server.");
   }
 
   /**
@@ -109,7 +133,7 @@ public class EchoServer extends AbstractServer
    */
   @Override
   synchronized protected void clientDisconnected(ConnectionToClient client) {
-	  System.out.println("A Client disconnected to the server.");
+	  System.out.println(client.getInfo("loginID")+" disconnected to the server.");
   }
   
   /**
