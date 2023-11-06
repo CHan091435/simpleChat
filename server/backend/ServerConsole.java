@@ -17,7 +17,7 @@ public class ServerConsole implements ChatIF{
 	@Override
 	public void display(String message) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("> " + message);
 	}
 	
 	public ServerConsole(int port) {
@@ -30,6 +30,7 @@ public class ServerConsole implements ChatIF{
 	      System.exit(1);
 		}
 		fromConsole = new Scanner(System.in); 
+		
 	}
 	
 	public void accept(){
@@ -42,7 +43,34 @@ public class ServerConsole implements ChatIF{
 	    	//no space allowed for commands
 	        message = fromConsole.nextLine();
 	        
-	        server.sendToAllClients("<SERVER MSG> "+ message);
+	        if(message.equals("#quit")) {
+	        	server.close();
+	        }
+	        else if(message.equals("#stop")) {
+	        	server.stopListening();
+	        }
+	        else if(message.equals("#close")) {
+	        	server.close();
+	        }
+	        else if(message.startsWith("#setport")) {
+	        	int port = Integer.parseInt(message.substring("#setport".length())); 
+	        	if(!server.isListening()) {
+	        		server.setPort(port);
+	            	System.out.println("Setting port to: " + port);
+	        	}else {
+	        		System.out.println("Can not set port when listening");
+	        	}
+	        }
+	        else if(message.equals("#start")) {
+	        	server.listen();
+	        }    
+	        else if(message.equals("#getport")) {
+	        	server.getPort();
+	        }
+	        
+	        else {
+	        	server.sendToAllClients("<SERVER MSG> "+ message);
+	        } 
 	      }
 	    } 
 	    catch (Exception ex) 
@@ -77,7 +105,7 @@ public class ServerConsole implements ChatIF{
 	    {
 	      System.out.println("ERROR - Could not listen for clients!");
 	    }
-	    //chat.accept();  //Wait for console data
+	    chat.accept();  //Wait for console data
 	    
 	    
 	  }
